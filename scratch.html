@@ -1,0 +1,81 @@
+<!-- from source code -->
+<div class="article" data-id='1'>
+	<!-- first <a> child => original article link -->
+	<a class='h-one article-title' href="http://www.theatlantic.com/magazine/print/1987/02/a-question-of-fairness/6370/">A Question of Fairness</a>
+	<!-- first <div> child => article description -->
+	<div class="desc">Clarence Thomas is Ronald Reagan's chairman of the Equal Employment Opportunity Commission. He walks a lonely road, not really agreeing with conservatives or liberals.</div>
+	<div class="article_details h-small">
+		<div class="article_details_left">
+			<div class='detail'>
+				<!-- first $('div.detail') => author -->
+				<span class="field-name">Author: </span>
+				<a href="/search/?q=Juan%20Williams">Juan Williams</a>
+			</div>
+			<div class='detail'>
+				<!-- second $('div.detail') => source -->
+				<span class="field-name">Source: </span>
+				<a href="/search/?q=The%20Atlantic">The Atlantic</a>
+			</div>
+		</div>
+		<div class="article_details_right">
+			<div class='detail'>
+				<!-- third $('div.detail') => publication date -->
+				<span class="field-name">Published: </span> Feb. 1, 1987
+			</div>
+			<div class='detail'>
+				<!-- fourth/last $('div.detail') => length in minutes and words -->
+				<span class="field-name">Length: </span> 33 minutes (8491 words)
+			</div>
+		</div>
+	</div>
+	<div class="article-options clearfix desktop-only"><ul class="button-row btn-short">
+		<li class="menu button-menu-wrap share-button-menu" data-article="1">
+			<div class="dropdown">
+				<a href="#" class="sm-button" data-target="#" data-toggle="dropdown" role="button">Read Later 
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li>
+						<a href="/readlater/pocket/connect/?next=%2Farticles%2Fsearch%2F%3Fq%3D&amp;sa=1&amp;ss=pocket">
+							<span class="icon-pocket-color"></span>
+							<span class="menu-icon-link">Pocket</span>
+						</a>
+					</li>
+					<li>
+						<a href="/readlater/instapaper/connect/?next=%2Farticles%2Fsearch%2F%3Fq%3D&amp;sa=1&amp;ss=instapaper">
+							<span class="icon-instapaper-color"></span>
+							<span class="menu-icon-link">Instapaper</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li class="menu button-menu-wrap share-button-menu">
+			<div class="dropdown">
+				<a href="#" class="sm-button share-button" data-target="#" data-toggle="dropdown" role="button"> Share 
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li>
+						<a href="http://www.facebook.com/share.php?u=http%3A%2F%2Fwww.theatlantic.com%2Fmagazine%2Fprint%2F1987%2F02%2Fa-question-of-fairness%2F6370%2F&amp;title=%22http%3A%2F%2Fwww.theatlantic.com%2Fmagazine%2Fprint%2F1987%2F02%2Fa-question-of-fairness%2F6370%2F%2C%22+via+Longreads." class="window-link">
+							<span class="icon-facebook-color"></span>
+							<span class="menu-icon-link">Facebook</span>
+						</a>
+					</li>
+					<li>
+						<a href="http://www.twitter.com/share?url=http%3A%2F%2Fwww.theatlantic.com%2Fmagazine%2Fprint%2F1987%2F02%2Fa-question-of-fairness%2F6370%2F&amp;text=A+Question+of+Fairness+%23longreads" class="window-link">
+							<span class="icon-twitter-color"></span>
+							<span class="menu-icon-link">Twitter</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li><a class="sm-button icon-twitter" href="http://www.twitter.com/longreads/status/28418321026">View Tweet</a>
+		</li>
+	</ul>
+</div>
+<span class="article_attribution desktop-only"></span>
+
+<!-- output from $('div.article').text() -->
+0 '\n    \n            A Question of Fairness\n        Clarence Thomas is Ronald Reagan\'s chairman of the Equal Employment Opportunity Commission. He walks a lonely road, not really agreeing with conservatives or liberals.Author: Juan WilliamsSource: The AtlanticPublished:  Feb. 1, 1987\n                Length:  33 minutes (8491 words)\n                \n                        Read Later PocketInstapaper\n                    Share \n                          Facebook\n                        \n                          Twitter\n                        \n                View Tweet\n     
