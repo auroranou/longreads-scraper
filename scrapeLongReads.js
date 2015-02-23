@@ -2,12 +2,26 @@ var async = require('async');
 var cheerio = require('cheerio');
 var fs = require('fs');
 var http = require('http');
+var MongoClient = require('mongodb').MongoClient
+var assert = require('assert');
 
 var body = '';
-var longReads = [];
+// var longReads = [];
+var url = 'mongodb://localhost:27017/test';
+
+MongoClient.connect(url, function(err, db) {
+  assert.equal(null, err);
+  console.log("Connected correctly to server");
+
+  var collection = db.collection('longreads');
+});
+
+function insertNewRead(obj, callback) {
+  db.collection('longreads').insert(obj);
+}
 
 // async.eachSeries(array, iterator, callback);
-var arr = [1,2,3,99,78,212,350,456,560]
+var arr = [1,2]
 async.eachSeries(arr, function(i, callback){
   getLongReads(i);
   callback();
@@ -33,7 +47,7 @@ function getLongReads(pageNum) {
         // console.log(pubDate);
         var length = $(this).find('div.article_details_right div:nth-child(2)').text();
         // console.log(length)
-        longReads.push({
+        var newRead = {
           title: title.trim(),
           articleUrl: articleUrl,
           author: format(author),
@@ -41,11 +55,14 @@ function getLongReads(pageNum) {
           pubDate: format(pubDate),
           minuteLength: getMinuteLength(length),
           wordLength: getWordLength(length)
+        };
+        insertNewread(newRead, function(){
+          // wut
         });
       });
     });
-    fs.writeFileSync('longReads.json', JSON.stringify(longReads));
-    console.log(longReads.length);
+    // fs.writeFileSync('longReads.json', JSON.stringify(longReads));
+    // console.log(longReads.length);
   });
 }
 
