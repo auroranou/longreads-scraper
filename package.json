@@ -1,0 +1,25 @@
+{
+  "name": "node-longreads",
+  "version": "1.0.0",
+  "description": "LongReads data scraper",
+  "main": "dbTest.js",
+  "dependencies": {
+    "async": "^0.9.0",
+    "cheerio": "^0.18.0",
+    "request": "^2.53.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auroranou/project_three_scraper.git"
+  },
+  "author": "Aurora Nou <auroranou@gmail.com> (http://aurorayes.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/auroranou/project_three_scraper/issues"
+  },
+  "homepage": "https://github.com/auroranou/project_three_scraper"
+}
