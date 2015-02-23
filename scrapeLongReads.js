@@ -8,7 +8,6 @@ var longReads = [];
 
 // async.eachSeries(array, iterator, callback);
 var arr = [1,2,3,99,78,212,350,456,560]
-// var arr = [1,2]
 async.eachSeries(arr, function(i, callback){
   getLongReads(i);
   callback();
@@ -44,7 +43,6 @@ function getLongReads(pageNum) {
           wordLength: getWordLength(length)
         });
       });
-      // db.longreadsdb.insert(longReads);
     });
     fs.writeFileSync('longReads.json', JSON.stringify(longReads));
     console.log(longReads.length);
