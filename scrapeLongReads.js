@@ -7,8 +7,8 @@ var body = '';
 var longReads = [];
 
 // async.eachSeries(array, iterator, callback);
-// var arr = [1,2,3,99,78,212,350,456,560]
-var arr = [1,2]
+var arr = [1,2,3,99,78,212,350,456,560]
+// var arr = [1,2]
 async.eachSeries(arr, function(i, callback){
   getLongReads(i);
   callback();
@@ -56,13 +56,9 @@ function format(str) {
 }
 
 function getMinuteLength(str) {
-  return str.match(/[\d]+\sminutes/)[0];
+  return str.match(/[\d]+\sminutes/) ? str.match(/[\d]+\sminutes/)[0] : null;
 }
 
 function getWordLength(str) {
-  if (str.match(/\(([^)]+)\)/)) {
-    return str.match(/\(([^)]+)\)/)[1];
-  } else {
-    return null;
-  }
+  return str.match(/\(([^)]+)\)/) ? str.match(/\(([^)]+)\)/)[1] : null;
 }
