@@ -7,8 +7,8 @@ var body = '';
 var longReads = [];
 
 // async.eachSeries(array, iterator, callback);
-// var arr = [99,78,100,456,560];
-var arr = [1,2,3,99,78,212,350,456,560]
+// var arr = [1,2,3,99,78,212,350,456,560]
+var arr = [1,2]
 async.eachSeries(arr, function(i, callback){
 	getLongReads(i);
 	callback();
@@ -35,11 +35,11 @@ function getLongReads(pageNum) {
 				var length = $(this).find('div.article_details_right div:nth-child(2)').text();
 				// console.log(length)
 				longReads.push({
-					title: formatTitle(title),
+					title: title.trim(),
 					articleUrl: articleUrl,
-					author: formatGeneral(author),
-					source: formatGeneral(source),
-					pubDate: formatGeneral(pubDate),
+					author: format(author),
+					source: format(source),
+					pubDate: format(pubDate),
 					minuteLength: getMinuteLength(length),
 					wordLength: getWordLength(length)
 				});
@@ -51,18 +51,12 @@ function getLongReads(pageNum) {
 	});
 }
 
-function formatTitle(str) {
-	return str.trim().replace(/(^\s+|\s+$)/g,'');
-}
-
-function formatGeneral(str) {
-	return str.trim().replace(/[^\s]*\s/, '');
+function format(str) {
+	return str.replace(/^\S+\s|\s+$/g, '');
 }
 
 function getMinuteLength(str) {
-	return str.replace(/\([^)]*\)/, '')
-		.replace(/[^\d]+/, '')
-		.trim();
+	return str.match(/[\d]+\sminutes/)[0];
 }
 
 function getWordLength(str) {
