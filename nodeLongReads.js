@@ -2,25 +2,39 @@ var cheerio = require('cheerio');
 var http = require('http');
 var MongoClient = require('mongodb').MongoClient;
 
-var longReads = [];
-var url = 'mongodb://localhost:27017/test';
-
 dbConnect();
 
 function dbConnect(){
+  var url = 'mongodb://localhost:27017/test';
+  
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     console.log('connected correctly to server');
 
     var collection = db.collection('longreads');
     collection.ensureIndex('title', {sparse: true, unique: true}, function() {
-      getLongReads(1, collection);
+      for (var i = 0; i < 10; i++) {
+        if (i > 4) {
+          db.close();
+          return;
+        } 
+        (function() {
+          getLongReads(i + 1, function(err, data) {
+            if (err) throw err;
+            collection.insert(data, function(err, response) {
+              if (err) throw err;
+            });
+          });
+        }(i));
+      }
     });
   });
 }
 
-function getLongReads(pageNum, collection) {
+function getLongReads(pageNum, callback) {
   var body = '';
+  var longReads = [];
+
   http.get('http://longreads.com/articles/search/?q=&page=' + pageNum, function(response) {
     response.on('data', function(d) {
       body += d;
@@ -38,16 +52,8 @@ function getLongReads(pageNum, collection) {
           wordLength: getWordLength($(this))
         });
       });
-      insertRecord(longReads, collection);
-      //  getLongReads(pageNum++, collection);
+      return callback(null, longReads);
     });
-  });
-}
-
-function insertRecord(data, collection) {
-  collection.insert(data, function(err, response) {
-    if (err) throw err;
-    // console.log(response);
   });
 }
 
