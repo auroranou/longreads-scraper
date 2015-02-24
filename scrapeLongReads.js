@@ -76,7 +76,7 @@ function format(str) {
 }
 
 function getMinuteLength(str) {
-  return str.match(/[\d]+\sminutes/) ? str.match(/[\d]+\sminutes/)[0] : null;
+  return str.match(/[\d]+/) ? str.match(/[\d]+/)[0] : null;
 }
 
 function getWordLength(str) {
