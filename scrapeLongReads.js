@@ -6,29 +6,20 @@ var MongoClient = require('mongodb').MongoClient
 
 var url = 'mongodb://localhost:27017/test';
 var longReads = [];
-var i = 1;
+var pageNum = 1;
 
+// connect to mongodb
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   console.log("Connected correctly to server");
 
   var collection = db.collection('longreads');
   collection.ensureIndex( "title", {sparse: true, unique: true}, function() {
-    getLongReads(i, collection);
+    // initiate get request with pageNum = 1 and collection = longreads
+    getLongReads(pageNum, collection);
   });
 // db.close();
 });
-
-function insertRecord(data, collection) {
-  collection.insert(data, function(err, result) {
-    if (err) throw err;
-    while (i <= 5) {
-      longReads = [];
-      i++
-      getLongReads(i, collection);
-    }
-  });
-}
 
 function getLongReads(pageNum, collection) {
   var body = '';
@@ -64,6 +55,19 @@ function getLongReads(pageNum, collection) {
       });
       insertRecord(longReads, collection);
     });
+  });
+}
+
+function insertRecord(data, collection) {
+  collection.insertMany(data, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+    while (pageNum <= 5) {
+      longReads = [];
+      // increment pageNum and call get longReads
+      pageNum++
+      getLongReads(pageNum, collection);
+    }
   });
 }
 
