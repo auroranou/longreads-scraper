@@ -14,10 +14,10 @@ function dbConnect(){
     var collection = db.collection('longreads');
     collection.ensureIndex('title', {sparse: true, unique: true}, function() {
       for (var i = 0; i < 10; i++) {
-        if (i > 4) {
-          db.close();
-          return;
-        } 
+        // if (i > 4) {
+        //   db.close();
+        //   return;
+        // } 
         (function() {
           getLongReads(i + 1, function(err, data) {
             if (err) throw err;
@@ -84,7 +84,7 @@ function getPubDate(data) {
 
 function getMinuteLength(data) {
   var length = data.find('div.article_details_right div:nth-child(2)').text();
-  return length.match(/[\d]+/) ? length.match(/[\d]+/)[0] : null;
+  return length.match(/[\d]+/) ? parseInt(length.match(/[\d]+/)[0]) : null;
 }
 
 function getWordLength(data) {
