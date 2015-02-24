@@ -2,7 +2,7 @@
   "name": "node-longreads",
   "version": "1.0.0",
   "description": "LongReads data scraper",
-  "main": "scrapeLongReads.js",
+  "main": "nodeLongReads.js",
   "dependencies": {
     "async": "^0.9.0",
     "cheerio": "^0.18.0",

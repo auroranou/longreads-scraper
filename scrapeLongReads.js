@@ -6,7 +6,6 @@ var MongoClient = require('mongodb').MongoClient
 
 var url = 'mongodb://localhost:27017/test';
 var longReads = [];
-var pageNum = 1;
 
 // connect to mongodb
 MongoClient.connect(url, function(err, db) {
@@ -16,14 +15,15 @@ MongoClient.connect(url, function(err, db) {
   var collection = db.collection('longreads');
   collection.ensureIndex( "title", {sparse: true, unique: true}, function() {
     // initiate get request with pageNum = 1 and collection = longreads
-    getLongReads(pageNum, collection);
+    getLongReads(1, collection);
   });
 // db.close();
 });
 
 function getLongReads(pageNum, collection) {
+  console.log('page number ', pageNum)
   var body = '';
-
+  var 
   http.get('http://longreads.com/articles/search/?q=&page=' + pageNum, function(response) {
     response.on('data', function(d) {
       body += d;
@@ -52,6 +52,11 @@ function getLongReads(pageNum, collection) {
           minuteLength: getMinuteLength(length),
           wordLength: getWordLength(length)
         });
+        while (pageNum <= 5) {
+          longReads = [];
+          pageNum++;
+          getLongReads(pageNum, collection);
+        }
       });
       insertRecord(longReads, collection);
     });
@@ -61,13 +66,7 @@ function getLongReads(pageNum, collection) {
 function insertRecord(data, collection) {
   collection.insertMany(data, function(err, result) {
     if (err) throw err;
-    console.log(result);
-    while (pageNum <= 5) {
-      longReads = [];
-      // increment pageNum and call get longReads
-      pageNum++
-      getLongReads(pageNum, collection);
-    }
+    // console.log(result);
   });
 }
 
