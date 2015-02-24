@@ -3,31 +3,36 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 var http = require('http');
 var MongoClient = require('mongodb').MongoClient
-var assert = require('assert');
 
-var body = '';
-// var longReads = [];
 var url = 'mongodb://localhost:27017/test';
+var longReads = [];
+var i = 1;
 
 MongoClient.connect(url, function(err, db) {
-  assert.equal(null, err);
+  if (err) throw err;
   console.log("Connected correctly to server");
 
   var collection = db.collection('longreads');
+  collection.ensureIndex( "title", {sparse: true, unique: true}, function() {
+    getLongReads(i, collection);
+  });
+// db.close();
 });
 
-function insertNewRead(obj, callback) {
-  db.collection('longreads').insert(obj);
+function insertRecord(data, collection) {
+  collection.insert(data, function(err, result) {
+    if (err) throw err;
+    while (i <= 5) {
+      longReads = [];
+      i++
+      getLongReads(i, collection);
+    }
+  });
 }
 
-// async.eachSeries(array, iterator, callback);
-var arr = [1,2]
-async.eachSeries(arr, function(i, callback){
-  getLongReads(i);
-  callback();
-});
+function getLongReads(pageNum, collection) {
+  var body = '';
 
-function getLongReads(pageNum) {
   http.get('http://longreads.com/articles/search/?q=&page=' + pageNum, function(response) {
     response.on('data', function(d) {
       body += d;
@@ -36,7 +41,7 @@ function getLongReads(pageNum) {
       var $ = cheerio.load(body);
       $('div.article').each(function(i) {
         var title = $(this).find('a.article-title').text();
-        // console.log(title);
+        // console.log(i, title);
         var articleUrl = $(this).find('a.article-title').attr('href');
         // console.log(articleUrl);
         var author = $(this).find('div.article_details_left div:first-child').text();
@@ -47,7 +52,7 @@ function getLongReads(pageNum) {
         // console.log(pubDate);
         var length = $(this).find('div.article_details_right div:nth-child(2)').text();
         // console.log(length)
-        var newRead = {
+        longReads.push({
           title: title.trim(),
           articleUrl: articleUrl,
           author: format(author),
@@ -55,14 +60,10 @@ function getLongReads(pageNum) {
           pubDate: format(pubDate),
           minuteLength: getMinuteLength(length),
           wordLength: getWordLength(length)
-        };
-        insertNewread(newRead, function(){
-          // wut
         });
       });
+      insertRecord(longReads, collection);
     });
-    // fs.writeFileSync('longReads.json', JSON.stringify(longReads));
-    // console.log(longReads.length);
   });
 }
 
