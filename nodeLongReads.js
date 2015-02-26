@@ -1,6 +1,5 @@
 var cheerio = require('cheerio');
 var http = require('http');
-var queue = require('queue-async');
 var MongoClient = require('mongodb').MongoClient;
 
 dbConnect();
@@ -14,7 +13,7 @@ function dbConnect(){
 
     var collection = db.collection('longreads');
     collection.ensureIndex('title', {sparse: true, unique: true}, function() {
-      for (var i = 0; i < 20; i++) {
+      for (var i = 0; i < 5; i++) {
         // if (i > 4) {
         //   db.close();
         //   return;
@@ -44,8 +43,7 @@ function getLongReads(pageNum, callback) {
     });
     response.on('end', function() {
       var $ = cheerio.load(body);
-      console.log('url', url)
-      console.log(pageNum);
+      console.log('loading ', url, pageNum);
       $('div.our-picks div.article').each(function(i) {
         longReads.push({
           title: getTitle($(this)),
@@ -56,7 +54,6 @@ function getLongReads(pageNum, callback) {
           minuteLength: getMinuteLength($(this)),
           wordLength: getWordLength($(this))
         });
-        console.log(i, longReads[i]['title']);
       });
       return callback(null, longReads);
     });
