@@ -13,7 +13,7 @@ function dbConnect(){
 
     var collection = db.collection('longreads');
     collection.ensureIndex('title', {sparse: true, unique: true}, function() {
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 20; i++) {
         // if (i > 4) {
         //   db.close();
         //   return;
@@ -30,7 +30,6 @@ function dbConnect(){
     });
   });
 }
-
 
 function getLongReads(pageNum, callback) {
   var body = '';
