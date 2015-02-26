@@ -13,7 +13,7 @@ function dbConnect(){
 
     var collection = db.collection('longreads');
     collection.ensureIndex('title', {sparse: true, unique: true}, function() {
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 5; i++) {
         // if (i > 4) {
         //   db.close();
         //   return;
@@ -34,13 +34,16 @@ function dbConnect(){
 function getLongReads(pageNum, callback) {
   var body = '';
   var longReads = [];
+  var url = 'http://longreads.com/?q=&page=';
 
-  http.get('http://longreads.com/articles/search/?q=&page=' + pageNum, function(response) {
+  http.get(url + pageNum, function(response) {
     response.on('data', function(d) {
       body += d;
     });
     response.on('end', function() {
       var $ = cheerio.load(body);
+      console.log('url', url)
+      console.log(pageNum);
       $('div.article').each(function(i) {
         longReads.push({
           title: getTitle($(this)),
