@@ -1,4 +1,4 @@
-# Data scraper for Longreads.com
+# Data scraping with http + cheerio
 
 This script parses article information from the Longreads source code and saves it as BSON to a Mongo database. It is used to power the REST API I built [here](https://longreads-api.herokuapp.com/).
 
@@ -8,5 +8,5 @@ This script parses article information from the Longreads source code and saves 
 + http module for requests
 + cheerio module for DOM traversal/data retrieval
 
-## Suggestions for improvement:
-Currently the scraper retrieves only basic article information. More sophisticated data, such as descriptions or tags, is not supported. 
+## Future additions?
+Currently the scraper retrieves only basic article information, limited to: title, author, source, publication date, and length. More sophisticated data, such as articles descriptions or tags, is not supported. 
