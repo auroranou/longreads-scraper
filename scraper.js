@@ -1,41 +1,38 @@
 let cheerio = require('cheerio');
-let MongoClient = require('mongodb').MongoClient;
-let request = require('request');
+let Promise = require('bluebird');
+let mongodb = Promise.promisifyAll(require('mongodb'));
+let MongoClient = Promise.promisifyAll(mongodb.MongoClient);
+let request = Promise.promisifyAll(require('request'), { multiArgs: true });
 
 // Load environment variables first
 require('dotenv').config();
 
-// Connect to the database, either a local instance or the production version 
-dbConnect();
+let url = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
+let numPages = process.env.NUM_PAGES || 20;
 
-function dbConnect(){
-  let url = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
+MongoClient.connectAsync(url).then((db) => {
+  let articlesCollection = db.collection('articles');
 
-  MongoClient.connect(url, (err, db) => {
-    if (err) throw err;
-    console.log('connected correctly to server');
+  getLongReads(1).then((arr) => {
 
-    // Initialize the collection
-    let collection = db.collection('articles');
-    collection.createIndex('title', {
-      sparse: true,
-      unique: true
+    return Promise.each(arr, (el) => {
+      return articlesCollection.update({
+        title: el.title
+      }, el, {
+        upsert: true
+      });
     });
 
-    getLongReads(1, (err, articles) => {
-      try {
-        collection.insert(articles, (err, res) => {
-          console.log(err, res);
-          db.close();
-        });
-      } catch(e) {
-        console.log(e);
-      }
-    });
+  }).then(()=> {
+    db.close();
+  }, (err) => {
+    console.log('Error 1: ', err);
   });
-}
+}, (err) => {
+  console.log('Error 2: ', err);
+});
 
-function getLongReads(pageNum, callback) {
+function getLongReads(pageNum) {
   let articles = [];
 
   let options = {
@@ -46,25 +43,26 @@ function getLongReads(pageNum, callback) {
     }
   }
 
-  request(options, (err, res, body) => {
-    if (err) throw new Error(err);
+  return new Promise((resolve, reject) => {
+    request.getAsync(options).then((res) => {
+      let $ = cheerio.load(res[1]);
 
-    let $ = cheerio.load(body);
-    console.log('loading', pageNum);
-
-    $('div.our-picks div.article').each(function(i) {
-      articles.push({
-        author: getAuthor($(this)),
-        minutes: getMinuteLength($(this)),
-        pubDate: getPubDate($(this)),
-        source: getSource($(this)),
-        title: getTitle($(this)),
-        url: getArticleUrl($(this)),
-        words: getWordLength($(this))
+      $('div.our-picks div.article').each(function(i) {
+        articles.push({
+          author: getAuthor($(this)),
+          minutes: getMinuteLength($(this)),
+          pubDate: getPubDate($(this)),
+          source: getSource($(this)),
+          title: getTitle($(this)),
+          url: getArticleUrl($(this)),
+          words: getWordLength($(this))
+        });
       });
+
+      resolve(articles);
+    }, (err) => {
+      reject(err);
     });
-    console.log(articles);
-    return callback(null, articles);
   });
 }
 
